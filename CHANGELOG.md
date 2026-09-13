@@ -1,3 +1,57 @@
+## Unreleased
+
+### Security: only your own Foundry can use the bridge now
+
+Until now the MCP server asked nobody who was connecting. The bridge on port 31415
+upgraded any WebSocket, the signaling server on 31416 answered every page with
+`Access-Control-Allow-Origin: *`, and both listened on every network interface. Any
+web page open in the same browser, and any machine on the same network, could call
+every tool: scene, actor and journal writes included. WebSockets have no same-origin
+policy, so the browser did nothing to stop it.
+
+- **Both ports listen on loopback only** (`127.0.0.1` and `::1`). If your browser
+  runs on a different machine than the MCP server, set `FOUNDRY_REMOTE_MODE=true`.
+- **Every connection is checked against the page's origin.** Set
+  `FOUNDRY_ALLOWED_ORIGINS` to a comma separated list, for example
+  `http://localhost:30000,https://*.forge-vtt.com`. Without it, the server remembers
+  the first Foundry that connects and refuses every other address afterwards. The
+  remembered address is kept in `allowed-origins.json` (next to the installer on
+  Windows, under `~/.config/ninjos-foundry-mcp` elsewhere); delete that file to have
+  it learn again.
+- **A refused page is told why.** The status readout above the player list shows
+  "MCP: address not allowed" together with the address and both ways out, instead
+  of looking like a server that is not running.
+- **The control channel on 31414 drops HTTP requests.** A browser could POST to it,
+  and the body line would have run as a tool call.
+
+### The module no longer gives up reconnecting
+
+The backend exits a minute after the last MCP client disconnects, by design. The
+module used to stop after five attempts, so closing Claude Desktop and opening it
+later left the bridge down until someone clicked. It now keeps trying every 30
+seconds, and the readout turns red after the quick first attempts rather than
+blinking gold for hours. A clean close from the server also counts as a reason to
+reconnect now; only a disconnect the module asked for does not.
+
+### Smaller fixes
+
+- A previous backend still holding a port while the next one starts no longer fails
+  the start: the listener retries for a few seconds.
+- `FOUNDRY_MCP_CONTROL_HOST` makes the control channel address configurable, as the
+  port already was.
+- 19 of 42 npm advisories are gone. Nothing that ships changed major version. The
+  one chain left at runtime is `werift`, the WebRTC library, which needs a major
+  upgrade and gets its own change.
+- The release workflows take the repository from their context instead of a
+  hardcoded address, so a fork no longer submits this repository's manifest.
+- `package-lock.json` is back in step with the version, and the version check now
+  reads it too.
+- A `.claude/settings.local.json` inherited from upstream is no longer tracked. It
+  granted agent sessions in this repository commands such as `Bash(sudo:*)`.
+
+The findings behind this section came from 9atatimer, who ran into them while
+getting the server to work in a fork.
+
 ## v14.2609.3 (2026-09-07)
 
 ### The bridge could be dead without anything saying so
