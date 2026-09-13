@@ -33,6 +33,16 @@ seconds, and the readout turns red after the quick first attempts rather than
 blinking gold for hours. A clean close from the server also counts as a reason to
 reconnect now; only a disconnect the module asked for does not.
 
+### Long quest journal pages no longer lose their end
+
+`update-quest-journal` and `link-quest-to-npc` read a journal page, changed it and
+wrote it back. Page content arrives in chunks of 50,000 characters, and only the
+first chunk was read, so everything past it was deleted when the page was written.
+Both tools now read the whole page before writing and write nothing if any part is
+missing. Adding to a specific page (`pageId`) now appends inside Foundry instead of
+sending the page back and forth. `link-quest-to-npc` also says so when it finds no
+place for the link, instead of reporting success.
+
 ### Smaller fixes
 
 - A previous backend still holding a port while the next one starts no longer fails
