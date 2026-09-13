@@ -33,6 +33,32 @@ seconds, and the readout turns red after the quick first attempts rather than
 blinking gold for hours. A clean close from the server also counts as a reason to
 reconnect now; only a disconnect the module asked for does not.
 
+### Security: players can no longer run MCP actions through the gamemaster
+
+Foundry lets every user with the "Query users" permission, which players have by
+default, send a registered query to the gamemaster's client. Every action of this
+module was registered that way, and each one only checked whether the client it ran
+on belonged to a gamemaster, which on that client is always true. A player could
+therefore delete actors, rewrite paths across the whole world or change any journal
+from the browser console, with gamemaster rights. The module now refuses every call
+that arrives through Foundry's user queries. The MCP bridge itself is not affected.
+
+### The write switch and the permissions now apply to every change
+
+"Allow Write Operations" promised that the AI changes nothing while it is off, but
+scenes, compendiums, playlists and roll tables ignored it, and most actor, item,
+token and ownership tools checked neither the switch nor the permissions per
+document type. Every tool that writes now checks both.
+
+- **Deleting actors or items on actors now needs "Permissions: actors" set to
+  "Create, change and delete"**, like every other delete. That is off by default.
+- Switching the active scene and moving, changing or removing tokens count as
+  changing scenes.
+- A path rewrite with `dryRun` still only needs writing to be switched on; the real
+  rewrite also needs change rights for scenes, actors, journals, playlists and roll
+  tables.
+- Splitting a journal page with `deleteOriginal` needs delete rights for journals.
+
 ### Long quest journal pages no longer lose their end
 
 `update-quest-journal` and `link-quest-to-npc` read a journal page, changed it and
