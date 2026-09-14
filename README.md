@@ -1,5 +1,19 @@
 # Ninjo's Foundry MCP
 
+> [!IMPORTANT]
+> **This repository is archived and no longer maintained.**
+> Ninjo's Foundry MCP continues at
+> [Niclasp1501/ninjos-foundry-mcp](https://github.com/Niclasp1501/ninjos-foundry-mcp).
+>
+> Version 14.2609.4 is a rewrite of both the Foundry module and the PC server. It keeps
+> the tool names, parameters, ports, world settings and the manifest address, so Foundry
+> offers the update as usual, and the new server setup takes over an existing
+> installation in place. It is free to use but no longer open source; see the licence in
+> the new repository.
+>
+> Versions up to 14.2609.3 stay available here under the MIT License. Please report
+> problems in the new repository.
+
 **Current Version / Aktuelle Version:** `14.2609.2`
 
 Run your Foundry VTT world through a conversation with Claude: build scenes, write
